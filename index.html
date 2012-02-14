@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>An Elastic Net Algorithm for the Travelling Salesman
+      Problem</title>
+    <meta name="description" content="">
+    <meta name="author" content="Mathieu Larose">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+
+    <!-- Le styles -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+    <style>
+      body { padding-top: 10px; }
+    </style>
+
+    <script type="text/javascript">
+      
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-29178586-1']);
+      _gaq.push(['_trackPageview']);
+      
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+      
+    </script>
+    
+  </head>
+
+  <body>
+
+    <a href="http://github.com/larose/ena"><img style="position:
+    absolute; top: 0; right: 0; border: 0;"
+    src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67"
+    alt="Fork me on GitHub"></a>
+
+    <div class="container">
+
+      <section>
+        <div class="page-header">
+          <h1>An Elastic Net Algorithm for the Travelling Salesman
+            Problem</h1>
+        </div>
+
+        <div class="row">
+
+          <div class="span12">
+
+            I implemented in Python the elastic net algorithm proposed
+            by Durbin and Willshaw <a href="#durbin">[1]</a> to solve
+            the <a href="http://en.wikipedia.org/wiki/Travelling_salesman_problem">
+            Travelling Salesman Problem</a>. The source code is
+            available
+            on <a href="https://github.com/larose/ena">GitHub</a>.
+
+          </div>
+        </div>
+
+
+
+      </section>
+
+      <section id="algorithm">
+        <div class="page-header">
+          <h3>Elastic Net Algorithm</h3>
+        </div>
+
+        <div class="row">
+          <div class="span12">
+
+            <blockquote>
+              <p>The elastic net algorithm is an iterative procedure
+              where M points, with M larger than the number of citiqes
+              N, are lying on a circular ring or "rubber band"
+              originally located at the center of the cities. The
+              rubber band is gradually elongated until it passes
+              sufficiently near each city to define a tour. During
+              that process two forces apply: one for minimizing the
+              length of the ring, and the other one for minimizing the
+              distance between the cities and the points on the
+              ring. These forces are gradually adjusted as the
+              procedure evolves.  </p>
+              
+              <small>Jean-Yves Potvin <a href="#potvin">[2]</a></small>
+              
+            </blockquote>
+
+          </div>
+        </div>
+        
+      </section>
+
+      
+      <section id="screenshots">
+        <div class="page-header">
+          <h3>Screenshots</h3>
+        </div>
+
+        <div class="row">
+
+          <div class="span12">
+            
+            <ul class="thumbnails">
+
+              <li class="span3">
+                <a href="assets/img/elastic-00000.png" class="thumbnail">
+                  <img src="assets/img/elastic-00000.png" alt="">
+                </a>
+              </li>
+
+              <li class="span3">
+                <a href="assets/img/elastic-00040.png" class="thumbnail">
+                  <img src="assets/img/elastic-00040.png" alt="">
+                </a>
+              </li>
+
+              <li class="span3">
+                <a href="assets/img/elastic-01470.png" class="thumbnail">
+                  <img src="assets/img/elastic-01470.png" alt="">
+                </a>
+              </li>
+
+              <li class="span3">
+                <a href="assets/img/elastic-05210.png" class="thumbnail">
+                  <img src="assets/img/elastic-05210.png" alt="">
+                </a>
+              </li>
+
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="contact">
+        <div class="page-header">
+          <h3>Contact</h3>
+        </div>
+
+        <div class="row" >
+
+          <div class="span12">
+
+            You can reach me
+            at <a href="mailto:mathieu.larose.ml@gmail.com">mathieu.larose.ml@gmail.com</a>
+          </div>
+
+        </div>
+      </section>
+
+      <section id="references">
+        
+        <div class="page-header">
+          <h3>References</h3>
+        </div>
+
+
+        <ul class="unstyled">
+          
+          <li id="durbin">[1]
+            <a href="http://www2.mrc-lmb.cam.ac.uk/archive/papers/CP49-76.pdf">
+              Durbin, R. and Willshaw, D. An Analogue Approach to the
+              Travelling Salesman Problem using an Elastic Net
+              Method. Nature 326, 689-691 (1987)</a>
+          </li>
+          
+          <li id="potvin">[2]
+            <a href="http://ce.sharif.ir/courses/84-85/2/ce667/resources/root/Seminar_no_7/paper_potvin_nn_tsp.pdf">
+              Potvin, J-Y. The Traveling Salesman Problem: A Neural
+              Network Perspective, 1993</a>
+          </li>
+        </ul>
+        
+      </section>
+
+
+    </div> <!-- /container -->
+
+
+  </body>
+</html>
