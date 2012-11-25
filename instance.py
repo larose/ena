@@ -1,7 +1,7 @@
 import numpy
 import os
 
-class Instance(object):
+class Instance:
     def __init__(self, name, cities):
         self._name = name
         self._original_cities = numpy.array(cities, dtype=float)
@@ -23,7 +23,6 @@ class Instance(object):
     def _get_name(self):
         return self._name
     name = property(fget=_get_name)
-
 
 def make_instance(filename):
     file = open(filename)

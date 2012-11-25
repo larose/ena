@@ -1,124 +1,83 @@
-import elastic_net
-import instance
+import errno
 import math
 import optparse
 import os
-import os.path
-import parameters
 import pprint
-import string
-import solution
 import sys
-import time
+import tempfile
 
+import elastic_net
+import instance
+import parameters
+import solution
 
 def main():
     options, args = parse_arguments()
 
-    print "- - - - - - - - -"
-    print "- Initilization -"
-    print "- - - - - - - - -"
-    print
-    
-    print "Reading '%s'..." % args[0],
-    inst = instance.make_instance(args[0])
-    print "OK"
-    
-    output_dir = make_output_dir(inst.name, options.output_dir)
+    print_initialization()
+
+    inst = make_instance(args[0])
+
+    output_dir       = options.output_dir or tempfile.mkdtemp(prefix="ena-")
     evolution_period = options.evolution
-    if evolution_period >= 0:
-        print "Creating directory '%s'..." % output_dir,
-        os.makedirs(output_dir)
-        print "OK"
-        
-    param = parameters.Parameters(**vars(options))
-    elastic = elastic_net.ElasticNet(inst.cities, param)
+    param            = parameters.Parameters(**vars(options))
+    elastic          = elastic_net.ElasticNet(inst.cities, param)
+    zfill_length     = int(math.log10(param['max_num_iter']) + 1)
+    rjust_length     = zfill_length + 5
+
+    draw_elastic = make_draw_elastic(inst.cities, zfill_length, output_dir)
+
+    make_output_directory(output_dir)
+
+    print_algorithm()
+    print_stop_criteria(param['max_num_iter'], param['epsilon'])
+    print_parameters(param)
+    print_starting_algorithm(rjust_length)
     
-    zfill_length = int(math.log10(param['max_num_iter']) + 1)
-    rjust_length = zfill_length + 5
-
-    print
-    print
-    print "- - - - - - -"
-    print "- Algorithm -"
-    print "- - - - - - -"
-    print
-    print "Stop criteria:"
-    print "   max number of iterations: %d" % param['max_num_iter']
-    print "   worst distance          : %f" % param['epsilon']
-    print
-    print "Parameters"
-    pprint.pprint(param.all())
-    print
-    print "Starting algorithm..."
-    print
-    print string.rjust("Iteration", rjust_length), "     Worst distance"
-
-    while elastic.iteration():
-        num_iter = elastic.num_iter - 1
-
-        if (num_iter % 100 == 0):
-            print string.rjust(str(num_iter), rjust_length) + "     ",
-            print elastic._worst_dist
-
-        if evolution_period > 0 and (num_iter % evolution_period == 0):
-            draw_elastic(num_iter, inst.cities, elastic.neurons, zfill_length,
-                         output_dir)
+    run_algorithm(inst, elastic, evolution_period, rjust_length, draw_elastic)
 
     if evolution_period >= 0:
-        draw_elastic(elastic.num_iter - 1, inst.cities,
-                     elastic.neurons, zfill_length, output_dir)
-
+        draw_elastic(elastic.num_iter - 1, elastic.neurons)
 
     permutation    = solution.decode_solution(elastic.dist2)
     (value, edges) = solution.compute_solution(permutation,
                                                inst.original_cities)
 
-    if evolution_period >= 0:
+    if evolution_period > 0:
         import draw
-        figure = draw.Figure()
-        figure.add_cities(inst.cities)
-        figure.add_solution(inst.cities, edges)
-        figure.savefig(os.path.join(output_dir, "solution.png"))
+        draw.draw_final_solution(inst.cities, edges,
+                                 os.path.join(output_dir, "solution.png"))
 
-    print
-    print
-    print "- - - - - -"
-    print "- Summary -"
-    print "- - - - - -"
-    print
+    print_summary(output_dir, elastic, value, permutation)
+    write_solution(output_dir, permutation, value)
 
-    if evolution_period >= 0:
-        print "Output directory    : %s" % output_dir
-    print "Number of iterations: %d" % elastic.num_iter
-    print "Worst distance      : %f" % elastic.worst_dist
-    print "Tour length         : %d" % value
-    print "Solution            : %s" % permutation
-
-
-def draw_elastic(num_iter, cities, neurons, zfill_length, output_dir):
-    import draw
-    figure = draw.Figure()
-    figure.add_cities(cities)
-    figure.add_neurons(neurons)
-    filename = "elastic-" + \
-        string.zfill(num_iter, zfill_length) + ".png"
-    figure.savefig(os.path.join(output_dir, filename))
     
-            
-def make_output_dir(name, prefix):
-    if prefix is None:
-        prefix = os.getcwd()
+def make_instance(filename):
+    print("Reading '%s'..." % filename, end=' ')
+    inst = instance.make_instance(filename)
+    print("OK")
+    return inst
 
-    output_dir = os.path.join(
-        prefix,
-        name + "-" + time.strftime("%Y-%m-%d@%H-%M-%S"))
+def make_draw_elastic(cities, zfill_length, output_dir):
+    def draw_elastic(num_iter, neurons):
+        import draw
+        filename = "elastic-" + str(num_iter).zfill(zfill_length) + ".png"
+        draw.draw_intermediate_solution(cities, neurons, 
+                                        os.path.join(output_dir, filename))
+        
+    return draw_elastic
 
-    return output_dir
-    
+def make_output_directory(output_dir):
+    print("Creating output directory: '%s'..." % output_dir, end=' ')
+    try:
+        os.makedirs(output_dir)
+    except OSError as exc:
+        if exc.errno != errno.EEXIST:
+            raise
+    print("OK")
             
 def parse_arguments():
-    parser = optparse.OptionParser("Usage: %prog [options] filename")
+    parser = optparse.OptionParser("Usage: %prog filename [options]")
 
     parser.add_option("-a", "--alpha",
                       type = float,
@@ -156,7 +115,6 @@ def parse_arguments():
                       type = float,
                       dest = "radius")
 
-    
     parser.add_option("-v", "--evolution",
                       type = int,
                       dest = "evolution",
@@ -165,20 +123,79 @@ def parse_arguments():
                       `evolution` iterations. Save only at the end if
                       evolution = 0. Save nothing if evolution < 0.""")
 
-
     parser.add_option("-o", "--output_dir",
                       type = "string",
                       dest = "output_dir")
     
-
     options, args = parser.parse_args()
 
     if len(args) != 1:
-        print "Argument error. Execute with --help."
+        print("Argument error. Execute with --help.")
         sys.exit(-1)
 
     return options, args
 
+def print_algorithm():
+    print()
+    print()
+    print("- - - - - - -")
+    print("- Algorithm -")
+    print("- - - - - - -")
+    print()
+
+def print_initialization():
+    print("- - - - - - - - -")
+    print("- Initilization -")
+    print("- - - - - - - - -")
+    print()
+
+def print_parameters(param):
+    print("Parameters")
+    pprint.pprint(param.all())
+    print()
+
+def print_starting_algorithm(rjust_length):
+    print("Starting algorithm...")
+    print()
+    print("Iteration".rjust(rjust_length), "     Worst distance")
+
+def print_stop_criteria(max_num_iter, epsilon):
+    print("Stop criteria:")
+    print("   max number of iterations >= %d" % max_num_iter)
+    print("   or")
+    print("   worst distance           >= %f" % epsilon)
+    print()
+
+def print_summary(output_dir, elastic, value, permutation):
+    print()
+    print()
+    print("- - - - - -")
+    print("- Summary -")
+    print("- - - - - -")
+    print()
+    print("Number of iterations: %d" % elastic.num_iter)
+    print("Worst distance      : %f" % elastic.worst_dist)
+    print("Tour length         : %d" % value)
+    print("Solution            : %s" % permutation)
+    print("Output directory    : %s" % output_dir)
+
+def run_algorithm(inst, elastic, evolution_period, rjust_length, draw_elastic):
+    while elastic.iteration():
+        num_iter = elastic.num_iter - 1
+        
+        if (num_iter % 100 == 0):
+            print(str(num_iter).rjust(rjust_length) + "     ", end=' ')
+            print(elastic._worst_dist)
+
+        if evolution_period > 0 and (num_iter % evolution_period == 0):
+            draw_elastic(num_iter, elastic.neurons)
+
+def write_solution(output_dir, permutation, value):
+    solution_file = open(os.path.join(output_dir, 'solution'), 'w')
+    solution_file.write(' '.join(map(str,permutation)) + '\n')
+
+    length_file = open(os.path.join(output_dir, 'solution.length'), 'w')
+    length_file.write(str(value) + '\n')
 
 if __name__ == '__main__':
     main()

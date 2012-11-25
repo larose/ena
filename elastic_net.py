@@ -1,7 +1,7 @@
 import math
 import numpy
 
-class ElasticNet(object):
+class ElasticNet:
     def __init__(self, cities, param):
         self._cities = cities
         self._param = param
@@ -14,11 +14,6 @@ class ElasticNet(object):
     def iteration(self):
         """
         Perform one iteration of the algorithm.
-
-        - Update K.
-        - Update weights.
-        - Update neurons.
-        - Check stop criteria.
 
         Return True if the algorithm has finished, False otherwise.
         """
@@ -54,7 +49,7 @@ class ElasticNet(object):
         
         return numpy.array(
             [numpy.dot(self._weights[:,i],
-                       self._delta[:,i]) for i in xrange(self._num_neurons)])
+                       self._delta[:,i]) for i in range(self._num_neurons)])
 
     def _init_neurons(self):
         """
@@ -80,7 +75,7 @@ class ElasticNet(object):
             [(self._neurons[i+1]
               - 2 * self._neurons[i]
               + self._neurons[i-1])
-             for i in xrange(1, self._num_neurons - 1)],
+             for i in range(1, self._num_neurons - 1)],
             
             [self._neurons[0]
              - 2 * self._neurons[self._num_neurons - 1]
@@ -94,7 +89,6 @@ class ElasticNet(object):
 
     def _update_k(self):
         if (self._num_iter % self._param['k_update_period']) == 0:
-            # A revoir: max(0.01, ...)
             self._k = max(0.01, self._param['k_alpha'] * self._k)
         
     def _update_neurons(self):
@@ -108,18 +102,26 @@ class ElasticNet(object):
         """Compute w_ij, i = 1, 2, ..., |Cities|; j = 1, 2, ...., |Neurons|"""
         
         self._delta = self._cities[:,numpy.newaxis] - self._neurons
+
+        # At this point
         # self._delta[i,j] == (delta_x, delta_y) between city i and neuron j
 
         self._dist2 = (self._delta ** 2).sum(axis=2)
+
+        # At this point
         # self._dist2[i,j] == square of the distance between city i and neuron j
 
         self._worst_dist = numpy.sqrt(self._dist2.min(axis=1).max())
 
         self._weights = numpy.exp(-self._dist2 / (2 * (self._k ** 2)))
+
+        # At this point
         # self._weights[i,j] == unnormalized weight associated to city
         # i and neuron j
 
         self._weights /= self._weights.sum(axis=1)[:,numpy.newaxis]
+
+        # At this point
         # self._weights[i,j] == normalized weight associated to city i
         # and neuron j
         
