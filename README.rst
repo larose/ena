@@ -19,15 +19,15 @@ Examples
 
 Show help message. ::
 
-    python run.py --help
+    python3 run.py --help
 
 Solve `tsp22` instance. ::
 
-    python run.py instances/tsp_22
+    python3 run.py instances/tsp_22
 
 Export the elastic every 100 iterations. ::
 
-    python run.py instances/tsp_22 --evolution 100
+    python3 run.py instances/tsp_22 --evolution 100
 
 
 Optimal Values
