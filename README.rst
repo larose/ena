@@ -2,7 +2,7 @@ Elastic Net Algorithm
 =====================
 
 This is an implementation of the elastic net algorithm proposed by
-Durbin and Willshaw [1] to solve the Travelling Salesman Problem.
+Durbin and Willshaw [1] to solve the Traveling Salesman Problem.
 
 The elastic net algorithm is an iterative procedure where M points,
 with M larger than the number of citiqes N, are lying on a circular
