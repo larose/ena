@@ -16,22 +16,23 @@
     <link href="assets/css/bootstrap.css" rel="stylesheet">
     <style>
       body { padding-top: 10px; }
+      .alert { margin-top: 18px; }
     </style>
 
     <script type="text/javascript">
-      
+
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', 'UA-29178586-1']);
       _gaq.push(['_trackPageview']);
-      
+
       (function() {
       var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
       ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
       var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
-      
+
     </script>
-    
+
   </head>
 
   <body>
@@ -59,7 +60,15 @@
           </div>
         </div>
 
-
+        <div class="row">
+          <div class="span12">
+            <div class="alert alert-info" role="alert">
+              <h3>Visualize the algorithm in your browser
+                at <a href="https://larose.github.io/tsp"
+                      class="alert-link">https://larose.github.io/tsp</a></h3>
+            </div>
+          </div>
+        </div>
 
       </section>
 
@@ -83,17 +92,17 @@
               distance between the cities and the points on the
               ring. These forces are gradually adjusted as the
               procedure evolves.  </p>
-              
+
               <small>Jean-Yves Potvin <a href="#potvin">[2]</a></small>
-              
+
             </blockquote>
 
           </div>
         </div>
-        
+
       </section>
 
-      
+
       <section id="screenshots">
         <div class="page-header">
           <h3>Screenshots</h3>
@@ -102,7 +111,7 @@
         <div class="row">
 
           <div class="span12">
-            
+
             <ul class="thumbnails">
 
               <li class="span3">
@@ -166,28 +175,28 @@
       </section>
 
       <section id="references">
-        
+
         <div class="page-header">
           <h3>References</h3>
         </div>
 
 
         <ul class="unstyled">
-          
+
           <li id="durbin">[1]
             <a href="http://www2.mrc-lmb.cam.ac.uk/archive/papers/CP49-76.pdf">
               Durbin, R. and Willshaw, D. An Analogue Approach to the
               Travelling Salesman Problem using an Elastic Net
               Method. Nature 326, 689-691 (1987)</a>
           </li>
-          
+
           <li id="potvin">[2]
             <a href="http://ce.sharif.ir/courses/84-85/2/ce667/resources/root/Seminar_no_7/paper_potvin_nn_tsp.pdf">
               Potvin, J-Y. The Traveling Salesman Problem: A Neural
               Network Perspective, 1993</a>
           </li>
         </ul>
-        
+
       </section>
 
 
